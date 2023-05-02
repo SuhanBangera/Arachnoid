@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { ActionNotFoundError } from "./errors"
 import { Actions, AsyncActions, Getter, SpyAsyncActionQueryOptions } from "./types"
-import { useQuery } from "react-query"
+// import { useQuery } from "react-query"
 
 export interface Store<State> {
     state: State
@@ -26,18 +26,18 @@ const createStore = <State>(store: Store<State>) => {
             }
         }
 
-        const asyncDispatch = (actionName: string, asyncFunction:(payload?: any)=>Promise<any>, payload?:any, options?: SpyAsyncActionQueryOptions<any>) => {
-            const response = useQuery([actionName], () => asyncFunction(payload), options);
-            if (Object.prototype.hasOwnProperty.call(store.asyncActions, actionName)) {
-                return store.asyncActions![actionName](getState, setState, response)
-            } else {
-                throw new ActionNotFoundError(`Async action ${actionName} not found in the store`);
-            }
-        }
+        // const asyncDispatch = (actionName: string, asyncFunction:(payload?: any)=>Promise<any>, payload?:any, options?: SpyAsyncActionQueryOptions<any>) => {
+        //     const response = useQuery([actionName], () => asyncFunction(payload), options);
+        //     if (Object.prototype.hasOwnProperty.call(store.asyncActions, actionName)) {
+        //         return store.asyncActions![actionName](getState, setState, response)
+        //     } else {
+        //         throw new ActionNotFoundError(`Async action ${actionName} not found in the store`);
+        //     }
+        // }
 
         return {
             getState,
-            asyncDispatch,
+            // asyncDispatch,
             dispatch
         }
     }
