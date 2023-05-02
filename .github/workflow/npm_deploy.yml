@@ -1,0 +1,28 @@
+name: NPM DEPLOY
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build and publish package
+        run: |
+          npm run build
+          npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
