@@ -1,7 +1,7 @@
 {
   "name": "arachnoid",
   "private": false,
-  "version": "0.1.2",
+  "version": "0.1.9",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -11,6 +11,7 @@
    "files": [
     "dist"
   ],
+  "logo": "./logo/arachnoid.jpeg",
   "exports": {
     ".": {
       "import": "./dist/arachnoid.es.js",
