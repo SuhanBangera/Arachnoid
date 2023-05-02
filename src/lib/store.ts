@@ -1,13 +1,8 @@
 import { useState } from "react"
 import { ActionNotFoundError } from "./errors"
-import { Actions, AsyncActions, Getter, SpyAsyncActionQueryOptions } from "./types"
+import { Getter,  Store  } from "./types"
 // import { useQuery } from "react-query"
 
-export interface Store<State> {
-    state: State
-    actions?: Actions<State>
-    asyncActions?: AsyncActions<State>
-}
 
 
 const createStore = <State>(store: Store<State>) => {

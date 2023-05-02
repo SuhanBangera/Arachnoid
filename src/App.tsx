@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
-import Test from './test'
+import { ArachnoidProvider } from 'arachnoid'
 
 function App() {
-
   return (
-    <div className="App">
-      <Test />
-    </div>
+    <ArachnoidProvider>
+      <div className="App">
+      </div>
+    </ArachnoidProvider>
   )
 }
 
