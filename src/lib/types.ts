@@ -9,6 +9,11 @@ export type Actions<State> = Record<string, Action<State>>
 export type AsyncAction<State> = (get: Getter<State>, set: Setter<State>, response?: UseQueryResult) => any;
 export type AsyncActions<State> = Record<string, AsyncAction<State>>
 export type AsyncActionCallback<State> = (get: Getter<State>, set: Setter<State>, response: Response) => void;
+export type Middleware = <State>(get:Getter<State>, set:Setter<State>, middlewareAction:MiddlewareAction)=>void; 
+export type ArachnoidMiddleware = {
+  middleware: Middleware, 
+  ignore: string[]|undefined,
+}
 
 
 
@@ -16,6 +21,11 @@ export type AsyncActionCallback<State> = (get: Getter<State>, set: Setter<State>
 export type SpyAsyncActionQueryOptions<T> = Omit<UseQueryOptions<T, unknown, T, string[]>, "queryKey" | "queryFn"> & {
   refetchInterval?: number | false | ((data: T | undefined, query: Query<T, unknown, T, string[]>) => number | false);
 };
+
+export interface MiddlewareAction {
+  name: string
+  payload?: any
+}
 
 export interface Store<State> {
   state: State

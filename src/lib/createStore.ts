@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
-import { Store, Getter, Setter, StateAction } from "./types"
+import { Store, Getter, Setter, StateAction, ArachnoidMiddleware } from "./types"
 import EventEmitter from "./even-emitter"
 import { ActionNotFoundError } from "./errors";
 
-const createStore = <State>(store: Store<State>) => {
+const createStore = <State>(store: Store<State>, middlewares:ArachnoidMiddleware[]=[]) => {
 
     const instance = new EventEmitter();
 
@@ -30,6 +30,11 @@ const createStore = <State>(store: Store<State>) => {
 
         const dispatch = (actionName: string, payload?: any) => {
             if (Object.prototype.hasOwnProperty.call(store.actions, actionName)) {
+                middlewares.forEach(middleware=>{
+                    if (!middleware.ignore?.includes(actionName)) {
+                        middleware.middleware(getState, setState, {name:actionName, payload})
+                    }
+                })
                 store.actions![actionName](getState, setState, payload)
                 instance.emit(actionName);
             } else {
