@@ -1,4 +1,8 @@
-import { createStore } from "arachnoid"
+import { createStore, createArachnoidMiddleware } from "arachnoid";
+
+const middleware1 = createArachnoidMiddleware((get, set, action)=>{
+    console.log (`${action.name} has been called.`);
+}, ['increment'])
 
 export const store = createStore({
     state: {
@@ -14,4 +18,4 @@ export const store = createStore({
             )
         }
     }
-});
+}, [middleware1]);

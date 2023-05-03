@@ -106,6 +106,66 @@ const Test = () => {
     )
 }
 ```
+### Using Middlewares
+Arachnoid provides bare-bones middleware support for its stores using ```createArachnoidMiddleware``` function. 
+
+```javascript
+import { createStore, createArachnoidMiddleware } from "arachnoid";
+
+const middleware1 = createArachnoidMiddleware((get, set, action)=>{
+    console.log (`${action.name} has been called with payload ${JSON.stringify(action.payload)}`);
+})
+
+export const store = createStore({
+    state: {
+        count: 0,
+    },
+
+    actions: {
+        increment: (get, set) => {
+            set((state) => ({
+                ...state,
+                count: state.count + 1,
+            })
+            )
+        }
+    }
+}, [middleware1]);
+```
+
+We can prevent certain actions from using middlewares by passsing ignore actions array to ```createArrachnoidMiddleware```. 
+
+```javascript
+import { createStore, createArachnoidMiddleware } from "arachnoid";
+
+const middleware1 = createArachnoidMiddleware((get, set, action)=>{
+    console.log (`${action.name} has been called with payload ${JSON.stringify(action.payload)}`);
+}, ["decrement"])
+
+export const store = createStore({
+    state: {
+        count: 0,
+    },
+
+    actions: {
+        increment: (get, set) => {
+            set((state) => ({
+                ...state,
+                count: state.count + 1,
+            })
+            )
+        },
+        decrement: (get, set) => {
+            set((state) => ({
+                ...state,
+                count: state.count - 1,
+            })
+            )
+        }
+    }
+}, [middleware1]);
+```
+Here all the actions except decrement will execute the ```middleware1```.
 
 
 ## ⛏️ Built Using <a name = "built_using"></a>
