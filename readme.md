@@ -72,7 +72,43 @@ yarn add arachnoid
 ```
 ## 🎈 Usage <a name="usage"></a>
 
-Add notes about how to use the system.
+### First create a store
+
+```javascript
+import { createStore } from "arachnoid"
+
+const useCountStore = createStore({
+    state: {
+        count: 0,
+    },
+
+    actions: {
+        increment: (get, set) => {
+            set((state) => ({
+                ...state,
+                count: state.count + 1,
+            })
+            )
+        }
+    }
+});
+```
+
+### Then bind your components, and that's it!!
+Use the hook anywhere, no providers are needed. Dispatch the actions and et'voila! The component will re-render on the changes.
+
+```javascript
+const Test = () => {
+
+    const instance1 = useCountStore();
+    return (
+        <h1 onClick={() => instance1.dispatch('increment')}>
+            Hello {instance1.getState().count}
+        </h1>
+    )
+}
+```
+
 
 ## ⛏️ Built Using <a name = "built_using"></a>
 
