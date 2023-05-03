@@ -9,5 +9,5 @@
 - [ ] Add key based access getter. 
 
 ### Bug Fixes 
-- [] Fix the performance issues. 
-- [] Fix the inability to handle complex data structure. 
+- [ ] Fix the performance issues. 
+- [ ] Fix the inability to handle complex data structure. 
