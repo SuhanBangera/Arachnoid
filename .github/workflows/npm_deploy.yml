@@ -1,28 +1,28 @@
-name: NPM DEPLOY
-
+name: Publish Arachnoid to npmjs
 on:
   push:
     branches:
       - main
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      # Setup .npmrc file to publish to npm
+      
+      - name: Set up Node.js 
+        uses: actions/setup-node@v3
         with:
           node-version: '16.x'
-
+          registry-url: 'https://registry.npmjs.org'
+      
       - name: Install dependencies
         run: npm install
 
-      - name: Build and publish package
+      - name: Build and publish package    
         run: |
-          npm run build
-          npm publish
+              npm run build 
+              npm ci 
+              npm publish
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
