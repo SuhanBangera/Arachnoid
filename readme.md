@@ -106,6 +106,56 @@ const Test = () => {
     )
 }
 ```
+
+### Dealing with asynchronous functions
+To use deal with asynchronous function, we can use the function ```createAsyncAction``` and use it along with regular archanoid actions. 
+
+```javascript
+import { createStore, createAsyncAction } from "arachnoid";
+
+const useAsyncStateStore = createStore({
+    state: {
+        todo: [],
+    },
+
+    actions: {
+        asyncFetch: (get, set, { num }) => createAsyncAction(async ({ num }) => {
+            const res = await fetch(`https://jsonplaceholder.typicode.com/todos/${num}`);
+            return await res.json();
+        }, (asyncResponse) => {
+            const { data, isLoading, isError } = asyncResponse;
+
+            if (!isLoading && !isError) {
+                set(state => ({
+                    todo: [...state.todo, ...data],
+                }))
+            }
+        }, { num })
+    }
+})
+```
+The data returned by the async function can be accessed from ```asyncResponse``` inside the callback function. We can pass any additional require as a payload while dispatching.  
+
+We can then dispatch this asynchronous action like we always do!!
+
+```javascript
+const Test = () => {
+
+    const instance1 = useAsyncStateStore();
+    return (<>
+        <h1 onClick={() => instance1.dispatch('asyncFetch')}>
+            Add Todo
+        </h1>
+        <ol>
+            {
+                instance1.getState().todo.map(ele=>(<li>ele.title</li>));
+            }
+        </ol>
+    </>)
+}
+```
+
+
 ### Using Middlewares
 Arachnoid provides bare-bones middleware support for its stores using ```createArachnoidMiddleware``` function. 
 

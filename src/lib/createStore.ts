@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Store, Getter, Setter, StateAction, ArachnoidMiddleware } from "./types"
-import EventEmitter from "./even-emitter"
+import EventEmitter from "./event-emitter"
 import { ActionNotFoundError } from "./errors";
 
 const createStore = <State>(store: Store<State>, middlewares:ArachnoidMiddleware[]=[]) => {
