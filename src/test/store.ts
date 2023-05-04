@@ -11,11 +11,10 @@ export const store = createStore({
 
     actions: {
         increment: (get, set) => {
-            set((state) => ({
-                ...state,
-                count: state.count + 1,
-            })
-            )
+            set({
+                ...get(),
+                count: get().count + 1,
+        })
         },
         asyncIncrement: (get, set, payload) => createAsyncAction(async (payload) => {
             console.log("Async Action called")
