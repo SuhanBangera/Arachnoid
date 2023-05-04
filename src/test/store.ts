@@ -30,7 +30,7 @@ export const store = createStore({
             }
         }, payload)
     },
-}, [middleware1]);
+});
 
 
 

@@ -1,17 +1,17 @@
 import { useMemo, useState } from "react";
+import mitt from 'mitt';
 import { Store, Getter, Setter, StateAction, ArachnoidMiddleware } from "./types"
-import EventEmitter from "./event-emitter"
 import { ActionNotFoundError } from "./errors";
 
 const createStore = <State>(store: Store<State>, middlewares:ArachnoidMiddleware[]=[]) => {
 
-    const instance = new EventEmitter();
+    const emitter = mitt(); 
 
     return () => {
         const [_, setCount] = useState<number>(0);
         useMemo(() => {
             for (const actionName in store.actions) {
-                instance.addEventListener(actionName, () => {
+                emitter.on(actionName, () => {
                     setCount(c => (c + 1) % Number.MAX_SAFE_INTEGER);
                 })
             }
@@ -36,7 +36,7 @@ const createStore = <State>(store: Store<State>, middlewares:ArachnoidMiddleware
                     }
                 })
                 store.actions![actionName](getState, setState, payload)
-                instance.emit(actionName);
+                emitter.emit(actionName);
             } else {
                 throw new ActionNotFoundError(`Action ${actionName} not found in the store`);
             }
@@ -50,5 +50,4 @@ const createStore = <State>(store: Store<State>, middlewares:ArachnoidMiddleware
 
 }
 
-
-export default createStore; 
+export default createStore;
