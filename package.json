@@ -11,7 +11,6 @@
   "files": [
     "dist"
   ],
-  "logo": "./logo/arachnoid.jpeg",
   "exports": {
     ".": {
       "import": "./dist/arachnoid.es.js",
