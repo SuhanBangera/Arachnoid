@@ -1,5 +1,6 @@
-import { useMemo, useState, useCallback, useReducer } from "react";
+import { useMemo, useState, useCallback } from "react";
 import mitt from 'mitt';
+import {produce} from 'immer';
 import { Store, Getter, Setter, StateAction, ArachnoidMiddleware } from "./types"
 import { ActionNotFoundError } from "./errors";
 
@@ -22,14 +23,11 @@ const createStore = <State>(store: Store<State>, middlewares: ArachnoidMiddlewar
 
         const setState: Setter<State> = (newState: State | StateAction<State>) => {
             if (typeof newState === 'function') {
-                const nextState = (newState as StateAction<State>)(store.state);
-                if (nextState !== store.state) {
-                    store.state = { ...store.state, ...nextState };
-                }
+                store.state = produce(store.state, newState as (state: State) => void);
             } else {
-                if (newState !== store.state) {
-                    store.state = { ...store.state, ...newState };
-                }
+                store.state = produce(store.state, (draftState: State) => {
+                    Object.assign((draftState as object), newState);
+                });
             }
         };
 
