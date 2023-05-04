@@ -55,3 +55,4 @@ const createStore = <State>(store: Store<State>, middlewares: ArachnoidMiddlewar
 }
 
 export default createStore;
+
