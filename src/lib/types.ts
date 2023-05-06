@@ -24,7 +24,6 @@ export interface MiddlewareAction {
 export interface Store<State> {
   state: State
   actions?: Actions<State>
-  asyncActions?: AsyncActions<State>
 }
 
 export interface SpyStoreProviderProps {
