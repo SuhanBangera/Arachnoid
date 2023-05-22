@@ -10,6 +10,8 @@ export type AsyncActions<State> = Record<string, Action<State>>;
 export type AsyncActionCallback<State> = (get: Getter<State>, set: Setter<State>, response: Response) => void;
 export type Middleware = <State>(get:Getter<State>, set:Setter<State>, middlewareAction:MiddlewareAction)=>void; 
 export type AsyncFunction<T> = (payload?: any) => Promise<T>;
+export type Listener<State> = (get:Getter<State>)=> void;
+export type Listeners<State> = Record<string, Listener<State>>;
 export type ArachnoidMiddleware = {
   middleware: Middleware, 
   ignore: string[]|undefined,
@@ -24,6 +26,7 @@ export interface MiddlewareAction {
 export interface Store<State> {
   state: State
   actions?: Actions<State>
+  listeners?: Listeners<State> 
 }
 
 export interface SpyStoreProviderProps {

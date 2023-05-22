@@ -217,6 +217,57 @@ export const store = createStore({
 ```
 Here all the actions except decrement will execute the ```middleware1```.
 
+### Adding Listeners
+Arachnoid providers bare-bones support for listeners subscribing to the state changes. 
+
+We can define listeners while creating the store. 
+
+```javascript 
+const store = createStore({
+    state: {
+        count: 0,
+    },
+
+    actions: {
+        increment: (get, set) => {
+            set({
+                ...get(),
+                count: get().count + 1,
+        })
+        }
+    },
+    listeners: {
+        test: (get)=>{
+            console.table(get())
+        }
+    }
+});
+```
+
+In here the listener ```test``` will listen to all the state changes, and execute itself then. 
+
+OR 
+
+We can also subscribe or unsubscribe to a listener inside a component. 
+ 
+ ```javascript 
+ const Test = () => {
+
+    const instance1 = store();
+
+    useEffect(()=>{
+        instance.subscribe("test2", get=>console.log(get()))
+        instance.unsubscribe('test');
+    }, [])
+
+    const handleClick = () => instance2.dispatch('increment')
+    return (
+        <h1 onClick={handleClick}>
+            Hello {instace1.getState().count} {instance2.getState().count}
+        </h1>
+    )
+}
+```
 
 ## ⛏️ Built Using <a name = "built_using"></a>
 

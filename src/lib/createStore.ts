@@ -1,7 +1,7 @@
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState, useCallback, useEffect } from "react";
 import mitt from 'mitt';
-import {produce} from 'immer';
-import { Store, Getter, Setter, StateAction, ArachnoidMiddleware } from "./types"
+import { produce } from 'immer';
+import { Store, Getter, Setter, StateAction, ArachnoidMiddleware, Listener, Listeners } from "./types"
 import { ActionNotFoundError } from "./errors";
 
 const createStore = <State>(store: Store<State>, middlewares: ArachnoidMiddleware[] = []) => {
@@ -46,10 +46,39 @@ const createStore = <State>(store: Store<State>, middlewares: ArachnoidMiddlewar
             }
         }, [store.actions, getState, setState, middlewares, onAction])
 
+        useEffect(() => {
+            if (!store.listeners) {
+                return;
+            }
+
+            for (const listener of Object.values(store.listeners)) {
+                listener(getState);
+            }
+        }, [store.state])
+
+        const subscribe = (name: string, listener: Listener<State>) => {
+            store.listeners = {
+                ...store.listeners,
+                [name]: listener,
+            };
+        }
+
+        const unsubscribe = (name: string) => {
+            if (!store.listeners) {
+                return;
+            }
+
+            if (name in store.listeners) {
+                delete store.listeners[name];
+            }
+        }
+
         return useMemo(() => ({
             getState,
-            dispatch
-        }), [getState, dispatch]);
+            dispatch,
+            subscribe,
+            unsubscribe
+        }), [getState, dispatch, subscribe, unsubscribe]);
     }
 
 }

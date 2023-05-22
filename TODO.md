@@ -8,6 +8,7 @@
 - [x] Add asynchronous action support. 
 - [ ] Add key based access getter. 
 - [ ] Add functionality to combine multiple stores to create one centralized store. 
+- [X] Add the support for subscribing to the listeners. 
 
 ### Bug Fixes 
 - [ ] Fix the performance issues. 
