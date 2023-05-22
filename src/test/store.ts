@@ -29,6 +29,11 @@ export const store = createStore({
             }
         }, payload)
     },
+    listeners: {
+        test: (get)=>{
+            console.table(get())
+        }
+    }
 });
 
 
