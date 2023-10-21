@@ -1,7 +1,6 @@
 import { useMemo, useState, useCallback, useEffect } from "react";
 import mitt from 'mitt';
-import { produce } from 'immer';
-import { Store, Getter, Setter, StateAction, ArachnoidMiddleware, Listener, Listeners } from "./types"
+import { Store, Getter, Setter, StateAction, ArachnoidMiddleware, Listener, Listeners, Actions } from "./types"
 import { ActionNotFoundError } from "./errors";
 
 const createStore = <State>(store: Store<State>, middlewares: ArachnoidMiddleware[] = []) => {
@@ -21,18 +20,30 @@ const createStore = <State>(store: Store<State>, middlewares: ArachnoidMiddlewar
 
         const getState: Getter<State> = useMemo(() => () => store.state, [store.state]);
 
-        const setState: Setter<State> = (newState: State | StateAction<State>) => {
+        const setState: Setter<State> = useCallback((newState: State | StateAction<State>) => {
+            const oldState = store.state
             if (typeof newState === 'function') {
-                store.state = produce(store.state, newState as (state: State) => void);
+                store.state = {
+                    ...store.state,
+                    ...(newState as StateAction<State>)(store.state)
+                };
             } else {
-                store.state = produce(store.state, (draftState: State) => {
-                    Object.assign((draftState as object), newState);
-                });
+                store.state = {
+                    ...store.state,
+                    ...newState
+                }
             }
-        };
+
+            if (oldState !== store.state && !!store.listeners) {
+                for (const listener of Object.values(store.listeners)) {
+                    listener(getState);
+                }
+            }
+        }, [store.state]);
 
         const hasOwnProperty = useMemo(() => Object.prototype.hasOwnProperty, []);
-        const dispatch = useCallback((actionName: string, payload?: any) => {
+
+        const dispatch = useCallback((actionName: keyof Actions<State>, payload?: any) => {
             if (hasOwnProperty.call(store.actions, actionName)) {
                 for (const middleware of middlewares) {
                     if (!middleware.ignore?.includes(actionName)) {
@@ -44,17 +55,7 @@ const createStore = <State>(store: Store<State>, middlewares: ArachnoidMiddlewar
             } else {
                 throw new ActionNotFoundError(`Action ${actionName} not found in the store`);
             }
-        }, [store.actions, getState, setState, middlewares, onAction])
-
-        useEffect(() => {
-            if (!store.listeners) {
-                return;
-            }
-
-            for (const listener of Object.values(store.listeners)) {
-                listener(getState);
-            }
-        }, [store.state])
+        }, [store.actions, getState, setState, middlewares, onAction]);
 
         const subscribe = (name: string, listener: Listener<State>) => {
             store.listeners = {
